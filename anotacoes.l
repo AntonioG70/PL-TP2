@@ -3,8 +3,9 @@
 %}
 %option noyywrap
 %%
-[a-zA-z]+                 {return(pal);}
-^=== :                    {return(IN);}
+[a-zA-Z\ óáéí]+\n       {yylval.palavra = strdup(yytext); return pal;}
+[a-zA-Z\ óáéí]+             {return txt;}
+^===\ :                    {return(IN);}
 ^(?i:@tit:)               {return(INITIT);}
 ^(?i:@triplos:)           {return(INITTRIP);}
 %%
