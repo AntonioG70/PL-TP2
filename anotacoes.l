@@ -8,4 +8,7 @@
 ^===\ :                    {return(IN);}
 ^(?i:@tit:)               {return(INITIT);}
 ^(?i:@triplos:)           {return(INITTRIP);}
+,                         {return(VIRG);}
+;                         {return(PONTOVIRGULA);}
+[]
 %%

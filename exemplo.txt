@@ -11,3 +11,9 @@ DS
 DS
 DS
 SDSDSADSDSDDSDSS
+
+@triplos:
+:OnórioL
+    :a :Person,
+      :Mecenas_Cultural;
+    :Name "Onorio Lima"

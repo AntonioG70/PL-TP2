@@ -29,25 +29,40 @@ void create_HTML(char *str){
 
 %union{ char* palavra; }
 
-%token IN INITIT INITTRIP txt
+%token IN INITIT INITTRIP txt PONTOVIRGULA VIRG obj
 %token <palavra> pal
 
 %%
-Anotacao : IN Doc      {printf("Reconheci comando1\n");}
+Anotacao : IN Doc Triplos                {printf("Reconheci comando Anotacao\n");}
+         | IN Doc Triplos Anotacao       {printf("Reconheci comando varias Anotacoes\n");}
          ;
 
-Doc : Topico Titulo Texto       {printf("Reconheci comando2\n");}
+Doc : Topico Titulo Texto       {printf("Reconheci doc\n");}
     ;
 
-Topico : pal                      {create_HTML($1); printf("Reconheci comando3\n");}
+Topico : pal                      {create_HTML($1); printf("Reconheci topico\n");}
        ;
 
-Titulo : INITIT pal               {printf("Reconheci comando4\n");}
+Titulo : INITIT pal               {printf("Reconheci titulo\n");}
        ;
 
-Texto : pal Texto                 {printf("Reconheci comando5\n");}
+Texto : pal Texto                 {printf("Reconheci texto\n");}
       | pal
       ;
+
+TriplosList : INITTRIP Sujeito Triplos
+            | INITTRIP Sujeito Triplos TriplosList
+            ;
+
+Triplos : Relacao ListaObjeto
+        ;
+
+ListaObjeto : Objeto PONTOVIRGULA
+            | Objeto VIRG ListaObjeto
+            ;
+
+Objeto : obj
+       ;
 
 %%
 
