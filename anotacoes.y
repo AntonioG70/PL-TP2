@@ -27,42 +27,56 @@ void create_HTML(char *str){
 
 %}
 
-%union{ char* palavra; }
+%union{ char* palavra; char* objeto;}
 
-%token IN INITIT INITTRIP txt PONTOVIRGULA VIRG obj
+%token IN INITIT INITTRIP txt PONTOVIRGULA VIRG SPACE
 %token <palavra> pal
+%token <objeto> obj
+%token <objeto> suj
 
 %%
-Anotacao : IN Doc Triplos                {printf("Reconheci comando Anotacao\n");}
-         | IN Doc Triplos Anotacao       {printf("Reconheci comando varias Anotacoes\n");}
+Anotacao : IN Doc Triplos                {printf("YACC:Reconheci comando Anotacao\n");}
+         | IN Doc Triplos Anotacao       {printf("YACC:Reconheci comando varias Anotacoes\n");}
          ;
 
-Doc : Topico Titulo Texto       {printf("Reconheci doc\n");}
+Doc : Topico Titulo Texto       {printf("YACC:Reconheci doc\n");}
     ;
 
-Topico : pal                      {create_HTML($1); printf("Reconheci topico\n");}
+Topico : pal                      {create_HTML($1); printf("YACC:Reconheci topico\n");}
        ;
 
-Titulo : INITIT pal               {printf("Reconheci titulo\n");}
+Titulo : INITIT pal               {printf("YACC:Reconheci titulo\n");}
        ;
 
-Texto : pal Texto                 {printf("Reconheci texto\n");}
+Texto : pal Texto                 {printf("YACC:Reconheci texto\n");}
       | pal
       ;
 
-TriplosList : INITTRIP Sujeito Triplos
-            | INITTRIP Sujeito Triplos TriplosList
-            ;
-
-Triplos : Relacao ListaObjeto
+Triplos : INITTRIP TriplosList          {printf("YACC:Reconheci triplos\n");}
         ;
 
-ListaObjeto : Objeto PONTOVIRGULA
-            | Objeto VIRG ListaObjeto
+TriplosList : Sujeito SPACE Relacoes          {printf("YACC:Reconheci triploList\n");}
+            | Sujeito SPACE Relacoes TriplosList      {printf("YACC:Reconheci triploList com triploList\n");}
             ;
 
-Objeto : obj
+Relacoes : Relacao SPACE ListaObjeto              {printf("YACC:Reconheci Relacoes:\n");}
+         | Relacao SPACE ListaObjeto SPACE Relacoes     {printf("YACC:Reconheci Relacoes com Relacoes:\n");}
+         ;
+
+Relacao : obj               {printf("YACC:Reconheci Relacao\n");}
+        ;
+
+ListaObjeto : Objeto PONTOVIRGULA         {printf("YACC:Reconheci Lista objeto\n");}
+            | Objeto VIRG SPACE ListaObjeto     {printf("YACC:Reconheci Lista objeto com lista objeto\n");}
+            ;
+
+Sujeito : suj             {printf("YACC:Reconheci sujeito %s\n", $1);}
+        ;
+
+Objeto : obj              {printf("YACC:Reconheci objeto\n");}
        ;
+
+
 
 %%
 

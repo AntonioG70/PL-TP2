@@ -11,9 +11,36 @@ DS
 DS
 DS
 SDSDSADSDSDDSDSS
-
 @triplos:
 :OnórioL
-    :a :Person,
-      :Mecenas_Cultural;
-    :Name "Onorio Lima"
+  :a :Person;
+
+:Ola
+ :b :Coragem,
+    :LEGAMERK;
+
+:Ohhhhh
+  :b :Coragem;
+
+=== :JJ
+@tit: ANDA LA
+SDSDSADSDSDDSDS
+DS
+SDSDSADSDSDDSDSSD
+S
+DS
+DS
+DS
+DS
+DS
+DS
+SDSDSADSDSDDSDSS
+@triplos:
+:OnórioL
+  :a :Person;
+  :BOMDIA :SALAODECHACORAGEM;
+:Ola
+ :b :Coragem;
+
+:Ohhhhh
+  :b :Coragem;
