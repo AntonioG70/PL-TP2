@@ -1,46 +1,59 @@
-=== :OnorioL
-@tit: Onório de Lima
-SDSDSADSDSDDSDS
-DS
-SDSDSADSDSDDSDSSD
-S
-DS
-DS
-DS
-DS
-DS
-DS
-SDSDSADSDSDDSDSS
-@triplos:
-:OnórioL
-  :a :Person;
-
-:Ola
- :b :Coragem,
-    :LEGAMERK;
-
-:Ohhhhh
-  :b :Coragem;
-
 === :JJ
-@tit: ANDA LA
-SDSDSADSDSDDSDS
-DS
-SDSDSADSDSDDSDSSD
-S
-DS
-DS
-DS
-DS
-DS
-DS
-SDSDSADSDSDDSDSS
+@tit: Jose Joao Antunes Guimaraes Dias de Almeida
+Professor do departamento de informática da Universidade do Minho.
+Leciona a UC de Processamento de Linguagens.
 @triplos:
-:OnórioL
-  :a :Person;
-  :BOMDIA :SALAODECHACORAGEM;
-:Ola
- :b :Coragem;
+:JJ
+  a   :Professor,
+      :Person.
 
-:Ohhhhh
-  :b :Coragem;
+:JJ
+ :colega_de :PRH,
+            :JCR;
+  :apreciador_de "coragem";
+  :professor_de  :PL;
+  :utilizador_de "Vim";
+  :img "jj.jpg".
+
+:PL
+  :UC_de :informática;
+  :muito "Divertido";
+  :deveras "Importante".
+
+=== :PRH
+@tit:Pedro Rangel Henriques
+Professor do departamento de informática da Universidade do Minho.
+Leciona a UC de Processamento de Linguagens.
+
+@triplos:
+:PRH
+  a :Professor,
+    :Person.
+
+:PRH
+ :colega_de :JJ,
+            :JCR;
+ :utilizador_de "Vim";
+ :professor_de  :PL;
+ :img "prh.jpg".
+
+:PL
+  :UC_de :informática;
+
+=== :JCR
+@tit:Jose Carlos Ramalho
+Professor do departamento de informática da Universidade do Minho.
+Leciona a UC de Processamento de Linguagens.
+@triplos:
+:JCR
+    a :Professor,
+      :Person.
+
+:JCR
+   :colega_de :JJ,
+              :PRH;
+   :professor_de :PL;
+   :utilizador_de "Visual_Studio_Code";
+   :img "jcr.jpg".
+:PL
+  :UC_de :informática;

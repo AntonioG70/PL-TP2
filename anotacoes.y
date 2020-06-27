@@ -17,6 +17,7 @@ char* currentSujeito;
 char* currentRelacao;
 
 
+
 void create_HTML(char *str){
   for(int i = 0; str[i] != '\0'; i++){
     if(str[i] == '\n'){
@@ -27,7 +28,7 @@ void create_HTML(char *str){
   currentHTML = strdup(str);
   char file[80];
   int count_bytes = 0;
-  sprintf(file, "%s.html", str);
+  sprintf(file, "./html/%s.html", str);
   printf("%s\n", file);
   int fd = open(file, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0666);
   char *buf = "<!DOCTYPE html>\n<html>\n<body>\n";
@@ -43,7 +44,7 @@ void create_HTML(char *str){
 void close_HTML(){
   printf("CORAGEM:%s", currentHTML);
   char file[80];
-  sprintf(file, "%s.html", currentHTML);
+  sprintf(file, "./html/%s.html", currentHTML);
   int fd = open(file, O_WRONLY | O_APPEND, 0666);
   char* buf = "</body>\n</html>\n";
   write(fd, buf, strlen(buf));
@@ -52,7 +53,7 @@ void close_HTML(){
 
 void titulo_HTML(char* str){
   char file[80];
-  sprintf(file, "%s.html", currentHTML);
+  sprintf(file, "./html/%s.html", currentHTML);
   int fd = open(file, O_WRONLY | O_APPEND, 0666);
   char string[50];
   int count_bytes = sprintf(string,"<h2>%s</h2>\n", str);
@@ -62,7 +63,7 @@ void titulo_HTML(char* str){
 
 void texto_HTML(char* str){
   char file[80];
-  sprintf(file, "%s.html", currentHTML);
+  sprintf(file, "./html/%s.html", currentHTML);
   int fd = open(file, O_WRONLY | O_APPEND, 0666);
   char string[200];
   int count_bytes = sprintf(string,"<p>%s</p>\n", str);
@@ -83,9 +84,9 @@ char* retiraDoisPontos(char* relacao){
     char* rel;
     if(relacao[0] == ':') {
       rel = relacao + 1;
-      return rel;
+      return poeEspaco(rel);
     }
-    return relacao;
+    return poeEspaco(relacao);
 }
 
 char* formataObjeto(char* objeto){
@@ -94,24 +95,47 @@ char* formataObjeto(char* objeto){
       obj = strdup(objeto + 1);
       obj[strlen(obj)-1] = '\0';
     }
-    return obj;
+    return poeEspaco(obj);
   }
 
-void triplos_HTML(char *str){
-  int count_bytes;
+  void triplos_HTML(char *str){
+    int count_bytes;
+    char file[80];
+    sprintf(file, "./html/%s.html", currentHTML);
+    int fd = open(file, O_WRONLY | O_APPEND, 0666);
+    char string[200];
+    if(strcmp(currentRelacao, ":img") == 0){
+      count_bytes = sprintf(string,"<img src=\"../imagens/%s\" alt=\"Coragem\" title=\"%s\">\n", formataObjeto(str), currentSujeito);
+    }
+    else if(strcmp(currentRelacao, "a") == 0){
+      if(str[0] == '\"' && strcmp(currentRelacao, ":img") != 0) {
+        count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é %s\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1),formataObjeto(str));
+      }
+      else{
+        count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é <a href=\"./%s.html\">%s</a>\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1), str+1, poeEspaco(str+1));
+        printf("NUNO AZEVEDO diz: %s", string);
+      }
+    } else {
+      if(str[0] == '\"' && strcmp(currentRelacao, ":img") != 0) {
+        count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é %s %s\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1), retiraDoisPontos(currentRelacao), formataObjeto(str));
+      }
+      else{
+        count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é %s <a href=\"./%s.html\">%s</a>\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1), retiraDoisPontos(currentRelacao), str+1, poeEspaco(str+1));
+        printf("NUNO AZEVEDO diz: %s", string);
+      }
+    }
+
+    write(fd, string, count_bytes);
+    close(fd);
+  }
+
+void create_Blank_HTML(char* str){
   char file[80];
-  sprintf(file, "%s.html", currentHTML);
-  int fd = open(file, O_WRONLY | O_APPEND, 0666);
-  char string[200];
-  if(str[0] == '\"') {
-    count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é %s %s\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1), retiraDoisPontos(currentRelacao), formataObjeto(str));
+  if(str[0] == ':'){
+    sprintf(file, "./html/%s.html", str+1);
+    int fd = open(file, O_WRONLY | O_APPEND | O_CREAT, 0666);
+    close(fd);
   }
-  else{
-    count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é %s <a href=\"./%s.html\">%s</a>\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1), retiraDoisPontos(currentRelacao), str+1, poeEspaco(str+1));
-    printf("NUNO AZEVEDO diz: %s", string);
-  }
-  write(fd, string, count_bytes);
-  close(fd);
 }
 
 %}
@@ -165,7 +189,7 @@ Relacao : obj               {currentRelacao = $1; printf("YACC:Reconheci Relacao
 RelacaoEspecial : esp       {currentRelacao = $1; printf("YACC:Reconheci RelacaoESPECIAL: %s\n", $1);}
                 ;
 
-RelacaoImagem : img           {printf("YACC:Reconheci Relacao IMAGEM\n");}
+RelacaoImagem : img           {currentRelacao = $1; printf("YACC:Reconheci Relacao IMAGEM\n");}
               ;
 
 ListaObjeto : Objeto PONTOVIRGULA         {printf("YACC:Reconheci Lista objeto\n");}
@@ -175,7 +199,7 @@ ListaObjeto : Objeto PONTOVIRGULA         {printf("YACC:Reconheci Lista objeto\n
 Sujeito : suj             {currentSujeito = $1; printf("YACC:Reconheci sujeito %s\n", $1);}
         ;
 
-Objeto : obj              {triplos_HTML($1); printf("YACC:Reconheci objeto\n");}
+Objeto : obj              {triplos_HTML($1); create_Blank_HTML($1); printf("YACC:Reconheci objeto\n");}
        ;
 
 %%
