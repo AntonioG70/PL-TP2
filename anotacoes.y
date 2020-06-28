@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <math.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #ifndef _GNU_SOURCE
@@ -29,20 +28,16 @@ void create_HTML(char *str){
   char file[80];
   int count_bytes = 0;
   sprintf(file, "./html/%s.html", str);
-  printf("%s\n", file);
   int fd = open(file, O_CREAT | O_TRUNC | O_WRONLY | O_APPEND, 0666);
   char *buf = "<!DOCTYPE html>\n<html>\n<body>\n";
   char string[30];
   count_bytes = sprintf(string,"<h1>%s</h1>\n", str);
-  printf("VOU ESCREVER: %s COUNT BYTES = %d\n", buf, count_bytes);
   write(fd, buf, strlen(buf));
-  printf("vou escrever %s\n", string);
   write(fd, string, count_bytes);
   close(fd);
 }
 
 void close_HTML(){
-  printf("CORAGEM:%s", currentHTML);
   char file[80];
   sprintf(file, "./html/%s.html", currentHTML);
   int fd = open(file, O_WRONLY | O_APPEND, 0666);
@@ -70,6 +65,7 @@ void texto_HTML(char* str){
   write(fd, string, count_bytes);
   close(fd);
 }
+
 char* poeEspaco(char* c){
   char* res = strdup(c);
   for(int i = 0; i < strlen(c); i++){
@@ -113,7 +109,6 @@ char* formataObjeto(char* objeto){
       }
       else{
         count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é <a href=\"./%s.html\">%s</a>\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1), str+1, poeEspaco(str+1));
-        printf("NUNO AZEVEDO diz: %s", string);
       }
     } else {
       if(str[0] == '\"' && strcmp(currentRelacao, ":img") != 0) {
@@ -121,7 +116,6 @@ char* formataObjeto(char* objeto){
       }
       else{
         count_bytes = sprintf(string,"<p><a href=\"./%s.html\">%s</a> é %s <a href=\"./%s.html\">%s</a>\n</p>", currentSujeito+1, poeEspaco(currentSujeito+1), retiraDoisPontos(currentRelacao), str+1, poeEspaco(str+1));
-        printf("NUNO AZEVEDO diz: %s", string);
       }
     }
 
@@ -150,56 +144,56 @@ void create_Blank_HTML(char* str){
 %token <objeto> img
 
 %%
-Anotacao : IN Doc Triplos                {printf("YACC:Reconheci comando Anotacao\n");}
-         | IN Doc Triplos Anotacao       {printf("YACC:Reconheci comando varias Anotacoes\n");}
+Anotacao : IN Doc Triplos
+         | IN Doc Triplos Anotacao
          ;
 
-Doc : Topico Titulo Texto         {printf("YACC:Reconheci doc\n");}
+Doc : Topico Titulo Texto
     ;
 
-Topico : pal                      {create_HTML($1); printf("YACC:Reconheci topico\n");}
+Topico : pal                      {create_HTML($1);}
        ;
 
-Titulo : INITIT pal               {titulo_HTML($2); printf("YACC:Reconheci titulo\n");}
+Titulo : INITIT pal               {titulo_HTML($2);}
        ;
 
-Texto : Texto pal                {texto_HTML($2); printf("YACC:Reconheci texto\n");}
-      | pal                       {texto_HTML($1); printf("YACC:Reconheci texto\n");}
+Texto : Texto pal                {texto_HTML($2);}
+      | pal                       {texto_HTML($1);}
       ;
 
-Triplos : INITTRIP TriplosList          {close_HTML(); printf("YACC:Reconheci triplos\n");}
+Triplos : INITTRIP TriplosList          {close_HTML();}
         ;
 
-TriplosList : Sujeito SPACE Relacoes          {printf("YACC:Reconheci triploList\n");}
-            | Sujeito SPACE Relacoes TriplosList      {printf("YACC:Reconheci triploList com triploList\n");}
+TriplosList : Sujeito SPACE Relacoes
+            | Sujeito SPACE Relacoes TriplosList
             ;
 
 
-Relacoes : Relacao SPACE ListaObjeto              {printf("YACC:Reconheci Relacoes:\n");}
-         | Relacao SPACE ListaObjeto SPACE Relacoes     {printf("YACC:Reconheci Relacoes com Relacoes:\n");}
-         | RelacaoEspecial SPACE ListaObjeto               {printf("YACC:Reconheci Relacao ESPECIAL:\n");}
-         | RelacaoEspecial SPACE ListaObjeto SPACE Relacoes        {printf("YACC:Reconheci Relacoes ESPECIAL COM RELACOES:\n");}
-         | RelacaoImagem SPACE ListaObjeto               {printf("YACC:Reconheci Relacao IMAGEM:\n");}
-         | RelacaoImagem SPACE ListaObjeto SPACE Relacoes        {printf("YACC:Reconheci Relacoes IMAGEM COM RELACOES:\n");}
+Relacoes : Relacao SPACE ListaObjeto
+         | Relacao SPACE ListaObjeto SPACE Relacoes
+         | RelacaoEspecial SPACE ListaObjeto
+         | RelacaoEspecial SPACE ListaObjeto SPACE Relacoes
+         | RelacaoImagem SPACE ListaObjeto
+         | RelacaoImagem SPACE ListaObjeto SPACE Relacoes
          ;
 
-Relacao : obj               {currentRelacao = $1; printf("YACC:Reconheci Relacao\n");}
+Relacao : obj               {currentRelacao = $1;}
         ;
 
-RelacaoEspecial : esp       {currentRelacao = $1; printf("YACC:Reconheci RelacaoESPECIAL: %s\n", $1);}
+RelacaoEspecial : esp       {currentRelacao = $1;}
                 ;
 
-RelacaoImagem : img           {currentRelacao = $1; printf("YACC:Reconheci Relacao IMAGEM\n");}
+RelacaoImagem : img           {currentRelacao = $1;}
               ;
 
-ListaObjeto : Objeto PONTOVIRGULA         {printf("YACC:Reconheci Lista objeto\n");}
-            | Objeto VIRG SPACE ListaObjeto     {printf("YACC:Reconheci Lista objeto com lista objeto\n");}
+ListaObjeto : Objeto PONTOVIRGULA
+            | Objeto VIRG SPACE ListaObjeto
             ;
 
-Sujeito : suj             {currentSujeito = $1; printf("YACC:Reconheci sujeito %s\n", $1);}
+Sujeito : suj             {currentSujeito = $1;}
         ;
 
-Objeto : obj              {triplos_HTML($1); create_Blank_HTML($1); printf("YACC:Reconheci objeto\n");}
+Objeto : obj              {triplos_HTML($1); create_Blank_HTML($1);}
        ;
 
 %%

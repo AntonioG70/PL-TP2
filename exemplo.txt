@@ -10,15 +10,12 @@ Leciona a UC de Processamento de Linguagens.
 :JJ
  :colega_de :PRH,
             :JCR;
-  :apreciador_de "coragem";
   :professor_de  :PL;
   :utilizador_de "Vim";
   :img "jj.jpg".
 
 :PL
   :UC_de :informática;
-  :muito "Divertido";
-  :deveras "Importante".
 
 === :PRH
 @tit:Pedro Rangel Henriques
